@@ -1,0 +1,97 @@
+---
+// DailyQuote.astro - 每日一句组件
+// 从 https://v1.hitokoto.cn/ 获取每日一句
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<p
+  class:list={["daily-quote", className]}
+  data-daily-quote
+>
+  <span class="quote-content">加载中...</span>
+  <span class="quote-origin hidden"></span>
+</p>
+
+<script>
+  interface HitokotoData {
+    uuid: string;
+    hitokoto: string;
+    type: string;
+    from: string;
+    from_who: string | null;
+    creator: string;
+    creator_uid: number;
+    reviewer: number;
+    commit_from: string;
+    created_at: string;
+    length: number;
+  }
+
+  async function fetchDailyQuote(): Promise<void> {
+    const quoteElements = document.querySelectorAll<HTMLElement>("[data-daily-quote]");
+
+    if (quoteElements.length === 0) return;
+
+    try {
+      const response = await fetch("https://v1.hitokoto.cn/");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data: HitokotoData = await response.json();
+
+      if (!data || !data.hitokoto) {
+        throw new Error("获取每日一句失败");
+      }
+
+      const content = data.hitokoto;
+      const origin = data.from_who ? `${data.from} · ${data.from_who}` : data.from;
+
+      quoteElements.forEach((el) => {
+        const contentEl = el.querySelector(".quote-content");
+        const originEl = el.querySelector(".quote-origin");
+
+        if (contentEl) {
+          contentEl.textContent = content;
+        }
+        if (originEl) {
+          originEl.textContent = origin ? ` —— ${origin}` : "";
+          originEl.classList.remove("hidden");
+        }
+      });
+    } catch {
+      // 静默失败，使用默认文本
+      const fallbackText = "事情有时不是你想的那样";
+      quoteElements.forEach((el) => {
+        const contentEl = el.querySelector(".quote-content");
+        if (contentEl) {
+          contentEl.textContent = fallbackText;
+        }
+      });
+    }
+  }
+
+  // 页面加载完成后获取每日一句
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", fetchDailyQuote);
+  } else {
+    fetchDailyQuote();
+  }
+
+  // 支持 Astro 的页面导航
+  document.addEventListener("astro:page-load", fetchDailyQuote);
+</script>
+
+<style>
+  .daily-quote {
+    margin: 0;
+  }
+  .quote-origin {
+    opacity: 0.6;
+  }
+</style>

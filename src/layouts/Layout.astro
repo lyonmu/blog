@@ -32,21 +32,36 @@ const {
 
 const socialImageURL = new URL(ogImage, Astro.url);
 
-const structuredData = {
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  headline: `${title}`,
-  image: `${socialImageURL}`,
-  datePublished: `${pubDatetime?.toISOString()}`,
-  ...(modDatetime && { dateModified: modDatetime.toISOString() }),
-  author: [
-    {
-      "@type": "Person",
-      name: `${author}`,
-      ...(profile && { url: profile }),
-    },
-  ],
+const personData = {
+  "@type": "Person",
+  name: author,
+  ...(profile && { url: profile }),
 };
+
+const structuredData = pubDatetime
+  ? {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: title,
+      image: socialImageURL.href,
+      datePublished: pubDatetime.toISOString(),
+      ...(modDatetime && { dateModified: modDatetime.toISOString() }),
+      author: [personData],
+    }
+  : {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      name: title,
+      description,
+      url: canonicalURL.toString(),
+      image: socialImageURL.href,
+      author: personData,
+      isPartOf: {
+        "@type": "WebSite",
+        name: SITE.title,
+        url: new URL("/", Astro.url).href,
+      },
+    };
 ---
 
 <!doctype html>
@@ -153,7 +168,7 @@ const structuredData = {
     <!-- Minimal inline script to prevent FOUC - sets theme immediately -->
     <script is:inline>
       (function () {
-        const initialColorScheme = ""; // "light" | "dark"
+        const initialColorScheme = "dark"; // "light" | "dark"
         const currentTheme = localStorage.getItem("theme");
 
         function getPreferTheme() {
@@ -273,7 +288,8 @@ const structuredData = {
     height: 1100px;
     margin-left: -550px;
     margin-top: -550px;
-    transform: translate(var(--site-cx, 50vw), var(--site-cy, 50vh)) translateZ(0);
+    transform: translate(var(--site-cx, 50vw), var(--site-cy, 50vh))
+      translateZ(0);
     background: radial-gradient(
       circle,
       color-mix(in oklab, var(--accent) 6%, transparent) 0%,

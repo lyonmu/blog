@@ -85,8 +85,8 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
           class="mt-7 max-w-xl text-base leading-relaxed opacity-75 sm:text-lg"
         />
         <br />
-        <div class="mt-8 flex flex-col sm:flex-row sm:items-center gap-4">
-          <p class="text-sm opacity-50 flex-shrink-0">
+        <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+          <p class="flex-shrink-0 text-sm opacity-50">
             &copy; {new Date().getFullYear()}&nbsp;
             <LinkButton
               class="font-medium underline decoration-dashed underline-offset-4 hover:text-accent"
@@ -100,7 +100,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
           {
             // only display if at least one social link is enabled
             SOCIALS.length > 0 && (
-              <div class="sm:border-l border-border/40 sm:pl-4">
+              <div class="border-border/40 sm:border-l sm:pl-4">
                 <Socials />
               </div>
             )
@@ -158,16 +158,14 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
             )}
           </ul>
 
-          <!-- ═══════════════════ CTA ═══════════════════ -->
-          <div class="mt-8 mb-4 flex justify-center w-full">
+          {/* ═══════════════════ CTA ═══════════════════ */}
+          <div class="mt-8 mb-4 flex w-full justify-center">
             <LinkButton
               href="/posts/"
-              class="group inline-flex items-center w-full sm:w-auto justify-center gap-2 rounded-xl border border-accent/20 bg-accent/10 px-8 py-4 text-base font-bold text-accent transition-all duration-300 hover:border-accent hover:bg-accent/20 hover:shadow-xl hover:shadow-accent/20 hover:-translate-y-0.5"
+              class="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-accent/20 bg-accent/10 px-8 py-4 text-base font-bold text-accent transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:bg-accent/20 hover:shadow-xl hover:shadow-accent/20 sm:w-auto"
             >
               查看所有文章
-              <IconArrowRight
-                class="inline-block transition-transform duration-300 group-hover:translate-x-1 rtl:-rotate-180"
-              />
+              <IconArrowRight class="inline-block transition-transform duration-300 group-hover:translate-x-1 rtl:-rotate-180" />
             </LinkButton>
           </div>
         </section>

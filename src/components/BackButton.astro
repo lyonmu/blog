@@ -11,7 +11,7 @@ const pathSegments = currentUrlPath.split("/").filter(s => s.trim());
   SITE.showBackButton && (
     <div class="app-layout">
       <div class="nav-bar-back mt-6 mb-2 flex items-center gap-3 overflow-hidden">
-        <div class="inline-flex items-center gap-1.5 rounded-full border border-border/20 bg-muted/5 px-3 py-1.5 font-cartograph text-sm backdrop-blur-sm breadcrumb-bar">
+        <div class="breadcrumb-bar inline-flex items-center gap-1.5 rounded-full border border-border/20 bg-muted/5 px-3 py-1.5 font-cartograph text-sm backdrop-blur-sm">
           {/* Back button */}
           <a
             id="back-button"
@@ -22,58 +22,58 @@ const pathSegments = currentUrlPath.split("/").filter(s => s.trim());
             <span>cd ..</span>
           </a>
 
-        {/* Breadcrumb trail */}
-        {pathSegments.length > 0 && (
-          <nav
-            aria-label="breadcrumb"
-            class="breadcrumb-trail flex min-w-0 items-center gap-1 text-sm"
-          >
-            {/* Separator after Back button */}
-            <span
-              class="breadcrumb-sep shrink-0 text-accent/40"
-              aria-hidden="true"
+          {/* Breadcrumb trail */}
+          {pathSegments.length > 0 && (
+            <nav
+              aria-label="breadcrumb"
+              class="breadcrumb-trail flex min-w-0 items-center gap-1 text-sm"
             >
-              /
-            </span>
+              {/* Separator after Back button */}
+              <span
+                class="breadcrumb-sep shrink-0 text-accent/40"
+                aria-hidden="true"
+              >
+                /
+              </span>
 
-            {/* Home / Root */}
-            <a
-              href="/"
-              class="breadcrumb-link shrink-0 rounded-md px-1.5 py-0.5 text-foreground/50 transition-colors duration-200 hover:bg-muted/10 hover:text-accent"
-              aria-label="前往首页"
-              title="首页"
-            >
-              ~
-            </a>
+              {/* Home / Root */}
+              <a
+                href="/"
+                class="breadcrumb-link shrink-0 rounded-md px-1.5 py-0.5 text-foreground/50 transition-colors duration-200 hover:bg-muted/10 hover:text-accent"
+                aria-label="前往首页"
+                title="首页"
+              >
+                ~
+              </a>
 
-            {pathSegments.map((segment, index) => (
-              <>
-                <span
-                  class="breadcrumb-sep shrink-0 text-accent/40"
-                  aria-hidden="true"
-                >
-                  /
-                </span>
-
-                {index + 1 === pathSegments.length ? (
+              {pathSegments.map((segment, index) => (
+                <>
                   <span
-                    class="breadcrumb-current truncate px-1.5 py-0.5 text-accent/90 capitalize"
-                    aria-current="page"
+                    class="breadcrumb-sep shrink-0 text-accent/40"
+                    aria-hidden="true"
                   >
-                    {decodeURIComponent(segment)}
+                    /
                   </span>
-                ) : (
-                  <a
-                    href={`/${pathSegments.slice(0, index + 1).join("/")}/`}
-                    class="breadcrumb-link shrink-0 rounded-md px-1.5 py-0.5 capitalize text-foreground/50 transition-colors duration-200 hover:bg-muted/10 hover:text-accent"
-                  >
-                    {decodeURIComponent(segment)}
-                  </a>
-                )}
-              </>
-            ))}
-          </nav>
-        )}
+
+                  {index + 1 === pathSegments.length ? (
+                    <span
+                      class="breadcrumb-current truncate px-1.5 py-0.5 text-accent/90 capitalize"
+                      aria-current="page"
+                    >
+                      {decodeURIComponent(segment)}
+                    </span>
+                  ) : (
+                    <a
+                      href={`/${pathSegments.slice(0, index + 1).join("/")}/`}
+                      class="breadcrumb-link shrink-0 rounded-md px-1.5 py-0.5 text-foreground/50 capitalize transition-colors duration-200 hover:bg-muted/10 hover:text-accent"
+                    >
+                      {decodeURIComponent(segment)}
+                    </a>
+                  )}
+                </>
+              ))}
+            </nav>
+          )}
         </div>
       </div>
     </div>

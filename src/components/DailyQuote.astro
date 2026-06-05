@@ -9,10 +9,7 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<p
-  class:list={["daily-quote", className]}
-  data-daily-quote
->
+<p class:list={["daily-quote", className]} data-daily-quote>
   <span class="quote-content">加载中...</span>
   <span class="quote-origin hidden"></span>
 </p>
@@ -33,7 +30,8 @@ const { class: className } = Astro.props;
   }
 
   async function fetchDailyQuote(): Promise<void> {
-    const quoteElements = document.querySelectorAll<HTMLElement>("[data-daily-quote]");
+    const quoteElements =
+      document.querySelectorAll<HTMLElement>("[data-daily-quote]");
 
     if (quoteElements.length === 0) return;
 
@@ -50,9 +48,11 @@ const { class: className } = Astro.props;
       }
 
       const content = data.hitokoto;
-      const origin = data.from_who ? `${data.from} · ${data.from_who}` : data.from;
+      const origin = data.from_who
+        ? `${data.from} · ${data.from_who}`
+        : data.from;
 
-      quoteElements.forEach((el) => {
+      quoteElements.forEach(el => {
         const contentEl = el.querySelector(".quote-content");
         const originEl = el.querySelector(".quote-origin");
 
@@ -67,7 +67,7 @@ const { class: className } = Astro.props;
     } catch {
       // 静默失败，使用默认文本
       const fallbackText = "事情有时不是你想的那样";
-      quoteElements.forEach((el) => {
+      quoteElements.forEach(el => {
         const contentEl = el.querySelector(".quote-content");
         if (contentEl) {
           contentEl.textContent = fallbackText;

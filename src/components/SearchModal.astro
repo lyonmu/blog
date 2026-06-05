@@ -79,7 +79,12 @@ import "@pagefind/default-ui/css/ui.css";
 
     <!-- Search body -->
     <div class="search-modal-body">
-      <div id="modal-pagefind-search" class="premium-search" style="--pagefind-ui-scale: 0.9;"></div>
+      <div
+        id="modal-pagefind-search"
+        class="premium-search"
+        style="--pagefind-ui-scale: 0.9;"
+      >
+      </div>
       <!-- Empty state illustration -->
       <div class="search-empty-state" data-search-empty>
         <div class="empty-icon">
@@ -96,9 +101,7 @@ import "@pagefind/default-ui/css/ui.css";
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
         </div>
-        <p class="empty-text">
-          输入关键词搜索文章、教程和想法...
-        </p>
+        <p class="empty-text">输入关键词搜索文章、教程和想法...</p>
       </div>
     </div>
 
@@ -239,7 +242,7 @@ import "@pagefind/default-ui/css/ui.css";
         window.requestIdleCallback || ((cb: () => void) => setTimeout(cb, 1));
       onIdle(async () => {
         if (signal.aborted) return;
-        
+
         // Ensure Pagefind UI does not re-initialize on the same element
         if (container.querySelector(".pagefind-ui")) return;
 

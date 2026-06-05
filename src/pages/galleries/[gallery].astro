@@ -227,8 +227,14 @@ const hasCoverInFolder = coverImage
 </dialog>
 
 <script>
+  let galleryCleanup: AbortController | null = null;
+
   // Construir array de imágenes desde el DOM
   function initGallery() {
+    galleryCleanup?.abort();
+    galleryCleanup = new AbortController();
+    const { signal } = galleryCleanup;
+
     const grid = document.getElementById("gallery-grid");
     const lightbox = document.getElementById(
       "lightbox"
@@ -275,23 +281,31 @@ const hasCoverInFolder = coverImage
     }
 
     items.forEach((btn, idx) => {
-      btn.addEventListener("click", () => open(idx));
+      btn.addEventListener("click", () => open(idx), { signal });
     });
 
-    closeBtn?.addEventListener("click", close);
-    prevBtn?.addEventListener("click", () => open(current - 1));
-    nextBtn?.addEventListener("click", () => open(current + 1));
+    closeBtn?.addEventListener("click", close, { signal });
+    prevBtn?.addEventListener("click", () => open(current - 1), { signal });
+    nextBtn?.addEventListener("click", () => open(current + 1), { signal });
 
-    lightbox.addEventListener("click", e => {
-      if (e.target === lb) close();
-    });
+    lightbox.addEventListener(
+      "click",
+      e => {
+        if (e.target === lb) close();
+      },
+      { signal }
+    );
 
-    document.addEventListener("keydown", e => {
-      if (!lb.open) return;
-      if (e.key === "Escape") close();
-      if (e.key === "ArrowLeft") open(current - 1);
-      if (e.key === "ArrowRight") open(current + 1);
-    });
+    document.addEventListener(
+      "keydown",
+      e => {
+        if (!lb.open) return;
+        if (e.key === "Escape") close();
+        if (e.key === "ArrowLeft") open(current - 1);
+        if (e.key === "ArrowRight") open(current + 1);
+      },
+      { signal }
+    );
   }
 
   // Inicializar en primera carga y en navegaciones SPA (View Transitions)

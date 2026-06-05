@@ -29,6 +29,5 @@ pnpm-debug.log*
 # pagefind
 
 public/pagefind
-AGENTS.md
 .claude
 CLAUDE.md

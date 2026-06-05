@@ -91,7 +91,9 @@ const nextPost =
     <!-- Post header section -->
     <header class="post-header relative mb-10 text-center">
       <div class="post-hero-bg"></div>
-      <div class="relative z-10 rounded-3xl border border-border/20 bg-muted/5 px-6 py-8 backdrop-blur-md sm:px-10 sm:py-12">
+      <div
+        class="relative z-10 rounded-3xl border border-border/20 bg-muted/5 px-6 py-8 backdrop-blur-md sm:px-10 sm:py-12"
+      >
         <!-- Title -->
         <h1
           transition:name={slugifyStr(title.replaceAll(".", "-"))}
@@ -172,8 +174,6 @@ const nextPost =
             class="hidden rounded-lg border border-border/25 bg-muted/10 px-2.5 py-1 opacity-70 backdrop-blur-sm transition-all duration-200 hover:border-accent/30 hover:opacity-100 sm:flex [&>svg]:size-3.5"
           />
         </div>
-
-
       </div>
     </header>
 
@@ -185,19 +185,35 @@ const nextPost =
     </article>
 
     <!-- ═══════ Post footer section ═══════ -->
-    <!-- ═══════ Post footer section ═══════ -->
-    <div class="relative mt-12 mb-8 flex items-center justify-center gap-4" aria-hidden="true">
-      <div class="relative h-px flex-1 bg-linear-to-r from-transparent via-border/30 to-accent/20">
-        <div class="absolute inset-0 bg-linear-to-r from-transparent via-accent/40 to-accent/40 blur-[2px]"></div>
+    <div
+      class="relative mt-12 mb-8 flex items-center justify-center gap-4"
+      aria-hidden="true"
+    >
+      <div
+        class="relative h-px flex-1 bg-linear-to-r from-transparent via-border/30 to-accent/20"
+      >
+        <div
+          class="absolute inset-0 bg-linear-to-r from-transparent via-accent/40 to-accent/40 blur-[2px]"
+        >
+        </div>
       </div>
-      
-      <div class="relative z-10 flex items-center gap-2 font-cartograph text-[10px] tracking-widest text-accent/40 uppercase select-none">
-        <span class="h-1.5 w-1.5 rounded-full bg-accent/50 shadow-[0_0_8px_var(--color-accent)]"></span>
+
+      <div
+        class="relative z-10 flex items-center gap-2 font-cartograph text-[10px] tracking-widest text-accent/40 uppercase select-none"
+      >
+        <span
+          class="h-1.5 w-1.5 rounded-full bg-accent/50 shadow-[0_0_8px_var(--color-accent)]"
+        ></span>
         fin
       </div>
 
-      <div class="relative h-px flex-1 bg-linear-to-l from-transparent via-border/30 to-accent/20">
-        <div class="absolute inset-0 bg-linear-to-l from-transparent via-accent/40 to-accent/40 blur-[2px]"></div>
+      <div
+        class="relative h-px flex-1 bg-linear-to-l from-transparent via-border/30 to-accent/20"
+      >
+        <div
+          class="absolute inset-0 bg-linear-to-l from-transparent via-accent/40 to-accent/40 blur-[2px]"
+        >
+        </div>
       </div>
     </div>
 
@@ -305,54 +321,52 @@ const nextPost =
 </Layout>
 
 <script is:inline data-astro-rerun>
-  /** Create a progress indicator
-   *  at the top */
+  window.postDetailsCleanup?.abort();
+  window.postDetailsCleanup = new AbortController();
+  const { signal } = window.postDetailsCleanup;
+
   function createProgressBar() {
-    // Create the main container div
+    document.querySelector(".progress-container")?.remove();
+
     const progressContainer = document.createElement("div");
     progressContainer.className =
       "progress-container fixed top-0 z-50 h-1 w-full bg-background";
 
-    // Create the progress bar div
     const progressBar = document.createElement("div");
     progressBar.className = "progress-bar h-1 w-0 bg-accent";
     progressBar.id = "myBar";
 
-    // Append the progress bar to the progress container
     progressContainer.appendChild(progressBar);
-
-    // Append the progress container to the document body or any other desired parent element
     document.body.appendChild(progressContainer);
   }
-  createProgressBar();
 
-  /** Update the progress bar
-   *  when user scrolls */
   function updateScrollProgress() {
-    document.addEventListener("scroll", () => {
+    const update = () => {
       const winScroll =
         document.body.scrollTop || document.documentElement.scrollTop;
       const height =
         document.documentElement.scrollHeight -
         document.documentElement.clientHeight;
-      const scrolled = (winScroll / height) * 100;
-      if (document) {
-        const myBar = document.getElementById("myBar");
-        if (myBar) {
-          myBar.style.width = scrolled + "%";
-        }
+      const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+      const myBar = document.getElementById("myBar");
+      if (myBar) {
+        myBar.style.width = `${scrolled}%`;
       }
-    });
-  }
-  updateScrollProgress();
+    };
 
-  /** Attaches links to headings in the document,
-   *  allowing sharing of sections easily */
+    document.addEventListener("scroll", update, { signal, passive: true });
+    update();
+  }
+
   function addHeadingLinks() {
     const headings = Array.from(
-      document.querySelectorAll("h2, h3, h4, h5, h6")
+      document.querySelectorAll(
+        "#article h2, #article h3, #article h4, #article h5, #article h6"
+      )
     );
     for (const heading of headings) {
+      if (!heading.id || heading.querySelector(".heading-link")) continue;
+
       heading.classList.add("group");
       const link = document.createElement("a");
       link.className =
@@ -367,15 +381,14 @@ const nextPost =
       heading.appendChild(link);
     }
   }
-  addHeadingLinks();
 
-  /** Attaches copy buttons to code blocks in the document,
-   * allowing users to copy code easily. */
   function attachCopyButtons() {
     const copyButtonLabel = "Copy";
-    const codeBlocks = Array.from(document.querySelectorAll("pre"));
+    const codeBlocks = Array.from(document.querySelectorAll("#article pre"));
 
     for (const codeBlock of codeBlocks) {
+      if (codeBlock.querySelector(".copy-code")) continue;
+
       const wrapper = document.createElement("div");
       wrapper.style.position = "relative";
 
@@ -395,13 +408,19 @@ const nextPost =
       codeBlock.setAttribute("tabindex", "0");
       codeBlock.appendChild(copyButton);
 
-      // wrap codebock with relative parent element
-      codeBlock?.parentNode?.insertBefore(wrapper, codeBlock);
-      wrapper.appendChild(codeBlock);
+      if (!codeBlock.parentElement?.hasAttribute("data-code-wrapper")) {
+        codeBlock.parentNode?.insertBefore(wrapper, codeBlock);
+        wrapper.setAttribute("data-code-wrapper", "");
+        wrapper.appendChild(codeBlock);
+      }
 
-      copyButton.addEventListener("click", async () => {
-        await copyCode(codeBlock, copyButton);
-      });
+      copyButton.addEventListener(
+        "click",
+        async () => {
+          await copyCode(codeBlock, copyButton);
+        },
+        { signal }
+      );
     }
 
     async function copyCode(block, button) {
@@ -418,11 +437,16 @@ const nextPost =
       }, 700);
     }
   }
+
+  createProgressBar();
+  updateScrollProgress();
+  addHeadingLinks();
   attachCopyButtons();
 
-  /* Go to page start after page swap */
-  document.addEventListener("astro:after-swap", () =>
-    window.scrollTo({ left: 0, top: 0, behavior: "instant" })
+  document.addEventListener(
+    "astro:after-swap",
+    () => window.scrollTo({ left: 0, top: 0, behavior: "instant" }),
+    { signal }
   );
 </script>
 
@@ -472,7 +496,11 @@ const nextPost =
     -webkit-backdrop-filter: blur(6px);
     background: color-mix(in srgb, var(--muted) 5%, transparent);
     position: relative;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+    transition:
+      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.3s ease,
+      border-color 0.3s ease,
+      background-color 0.3s ease;
   }
 
   .post-nav-link:hover {

@@ -458,6 +458,15 @@ const nextPost =
       document.querySelectorAll<HTMLElement>("#article .mermaid");
     if (!diagrams.length) return;
 
+    for (const diagram of diagrams) {
+      const source = diagram.dataset.mermaidSource ?? diagram.textContent ?? "";
+      diagram.dataset.mermaidSource = source;
+      if (diagram.querySelector("svg")) {
+        diagram.textContent = source;
+      }
+      diagram.removeAttribute("data-processed");
+    }
+
     const { default: mermaid } = await import("mermaid");
 
     mermaid.initialize({

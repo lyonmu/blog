@@ -364,3 +364,35 @@ const structuredData = pubDatetime
     }
   });
 </script>
+
+<script>
+  async function renderMermaid() {
+    const diagrams =
+      document.querySelectorAll<HTMLElement>("#article .mermaid");
+    if (!diagrams.length) return;
+
+    for (const diagram of diagrams) {
+      const source = diagram.dataset.mermaidSource ?? diagram.textContent ?? "";
+      diagram.dataset.mermaidSource = source;
+      if (diagram.querySelector("svg")) {
+        diagram.textContent = source;
+      }
+      diagram.removeAttribute("data-processed");
+    }
+
+    const { default: mermaid } = await import("mermaid");
+
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: "strict",
+      theme: document.documentElement.classList.contains("dark")
+        ? "dark"
+        : "default",
+    });
+
+    await mermaid.run({ nodes: Array.from(diagrams) });
+  }
+
+  document.addEventListener("astro:page-load", renderMermaid);
+  renderMermaid();
+</script>

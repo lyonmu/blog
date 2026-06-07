@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 
 const searchPage = await readFile("src/pages/search.astro", "utf8");
 const postDetails = await readFile("src/layouts/PostDetails.astro", "utf8");
+const layout = await readFile("src/layouts/Layout.astro", "utf8");
 
 assert.match(
   searchPage,
@@ -23,13 +24,31 @@ assert.match(
 );
 
 assert.match(
-  postDetails,
-  /mermaidSource/,
-  "mermaid diagrams should keep their source for repeat renders after client navigation"
+  searchPage,
+  /dataset\.pagefindInitializing/,
+  "search page should lock while Pagefind initialization is pending"
 );
 
 assert.match(
-  postDetails,
+  layout,
+  /mermaidSource/,
+  "global layout script should keep Mermaid source for repeat renders after client navigation"
+);
+
+assert.match(
+  layout,
   /removeAttribute\("data-processed"\)/,
-  "mermaid render should clear processed state before rerendering"
+  "global layout script should clear Mermaid processed state before rerendering"
+);
+
+assert.match(
+  layout,
+  /document\.addEventListener\("astro:page-load", renderMermaid\)/,
+  "global layout script should render Mermaid after Astro client navigation"
+);
+
+assert.doesNotMatch(
+  postDetails,
+  /document\.addEventListener\("astro:page-load", renderMermaid\)/,
+  "post layout should not own Mermaid page-load rendering because it is skipped on client navigation"
 );

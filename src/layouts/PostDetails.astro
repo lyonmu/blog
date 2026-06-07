@@ -384,7 +384,9 @@ const nextPost =
 
   function attachCopyButtons() {
     const copyButtonLabel = "Copy";
-    const codeBlocks = Array.from(document.querySelectorAll("#article pre"));
+    const codeBlocks = Array.from(
+      document.querySelectorAll("#article pre:not(.mermaid)")
+    );
 
     for (const codeBlock of codeBlocks) {
       if (codeBlock.querySelector(".copy-code")) continue;
@@ -450,6 +452,30 @@ const nextPost =
   );
 </script>
 
+<script>
+  async function renderMermaid() {
+    const diagrams =
+      document.querySelectorAll<HTMLElement>("#article .mermaid");
+    if (!diagrams.length) return;
+
+    const { default: mermaid } = await import("mermaid");
+
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: "strict",
+      theme: document.documentElement.classList.contains("dark")
+        ? "dark"
+        : "default",
+    });
+
+    await mermaid.run({ nodes: Array.from(diagrams) });
+  }
+
+  document.addEventListener("astro:page-load", renderMermaid);
+  document.addEventListener("astro:after-swap", renderMermaid);
+  renderMermaid();
+</script>
+
 <style>
   .post-title {
     background: linear-gradient(
@@ -510,6 +536,21 @@ const nextPost =
 
   .post-nav-link:active {
     transform: translateY(0) scale(0.98);
+  }
+
+  :global(.app-prose pre.mermaid) {
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+    border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+    border-radius: 0.75rem;
+    background: color-mix(in oklab, var(--muted) 18%, transparent);
+    padding: 1rem;
+  }
+
+  :global(.app-prose pre.mermaid svg) {
+    max-width: 100%;
+    height: auto;
   }
 
   /* Aurora glow layer — always visible, intensifies on hover */

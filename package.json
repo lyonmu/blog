@@ -21,6 +21,7 @@
     "astro": "6.4.4",
     "dayjs": "^1.11.19",
     "lodash.kebabcase": "^4.1.1",
+    "mermaid": "^11.15.0",
     "remark-collapse": "^0.1.2",
     "remark-toc": "^9.0.0",
     "satori": "^0.25.0",

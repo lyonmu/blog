@@ -13,6 +13,42 @@ import {
 import { transformerFileName } from "./src/utils/transformers/fileName";
 import { SITE } from "./src/config";
 
+function escapeHtml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
+type MarkdownNode = {
+  type?: string;
+  lang?: string | null;
+  value?: string;
+  children?: MarkdownNode[];
+};
+
+function remarkMermaid() {
+  return (tree: MarkdownNode) => {
+    const visit = (node: MarkdownNode) => {
+      if (Array.isArray(node.children)) {
+        node.children = node.children.map(child => {
+          if (child.type === "code" && child.lang === "mermaid") {
+            return {
+              type: "html",
+              value: `<pre class="mermaid">${escapeHtml(child.value ?? "")}</pre>`,
+            };
+          }
+
+          visit(child);
+          return child;
+        });
+      }
+    };
+
+    visit(tree);
+  };
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: SITE.website,
@@ -29,6 +65,7 @@ export default defineConfig({
       remarkPlugins: [
         remarkToc,
         [remarkCollapse, { test: "Table of contents" }],
+        remarkMermaid,
       ],
     }),
     shikiConfig: {

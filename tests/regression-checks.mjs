@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 const searchPage = await readFile("src/pages/search.astro", "utf8");
 const postDetails = await readFile("src/layouts/PostDetails.astro", "utf8");
 const layout = await readFile("src/layouts/Layout.astro", "utf8");
+const themeScript = await readFile("src/scripts/theme.ts", "utf8");
 
 assert.match(
   searchPage,
@@ -51,4 +52,16 @@ assert.doesNotMatch(
   postDetails,
   /document\.addEventListener\("astro:page-load", renderMermaid\)/,
   "post layout should not own Mermaid page-load rendering because it is skipped on client navigation"
+);
+
+assert.match(
+  layout,
+  /const initialColorScheme = "light"/,
+  "inline theme bootstrap should default to light mode"
+);
+
+assert.match(
+  themeScript,
+  /const initialColorScheme = "light"/,
+  "theme script should default to light mode"
 );

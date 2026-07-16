@@ -5,7 +5,7 @@ draft: false
 description: "梳理一下可能会遇到的典型kafka面试题"
 tags:
   - kafka
-  - 消息毒猎
+  - 消息队列
   - 面试题
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: "mysql典型面试题"
-pubDatetime: 2026-07-15T20:14:00+08:00
+pubDatetime: 2026-07-16T09:33:00+08:00
 draft: false
 description: "梳理一下可能会遇到的典型mysql面试题"
 tags:

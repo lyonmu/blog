@@ -356,12 +356,12 @@ const nextPost =
   }
   .reading-layout {
     display: grid;
-    grid-template-columns: minmax(0, 760px);
+    grid-template-columns: minmax(0, 1100px);
     justify-content: center;
     gap: 2rem;
   }
   #article {
-    max-width: 760px;
+    max-width: 1100px;
     min-width: 0;
     margin: 0;
   }
@@ -370,7 +370,7 @@ const nextPost =
   }
   @media (min-width: 1280px) {
     .reading-layout {
-      grid-template-columns: minmax(0, 760px) minmax(160px, 1fr);
+      grid-template-columns: minmax(0, min(78%, 1100px)) minmax(160px, 1fr);
     }
   }
   :global(.app-prose pre.mermaid) {

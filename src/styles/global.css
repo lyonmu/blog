@@ -79,11 +79,11 @@ i {
 }
 
 @utility max-w-app {
-  @apply max-w-4xl xl:max-w-5xl;
+  max-width: 1440px;
 }
 
 @utility app-layout {
-  @apply mx-auto w-full max-w-app px-4;
+  @apply mx-auto w-full max-w-app px-4 lg:w-4/5;
 }
 
 .active-nav {

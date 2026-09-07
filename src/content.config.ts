@@ -4,7 +4,6 @@ import { z } from "astro/zod";
 import { SITE } from "@/config";
 
 export const BLOG_PATH = "src/data/blog";
-export const GALLERY_PATH = "src/data/galleries";
 
 const blog = defineCollection({
   loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: `./${BLOG_PATH}` }),
@@ -25,17 +24,4 @@ const blog = defineCollection({
     }),
 });
 
-const galleries = defineCollection({
-  loader: glob({ pattern: "**/index.{md,mdx}", base: `./${GALLERY_PATH}` }),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      description: z.string(),
-      pubDatetime: z.date(),
-      draft: z.boolean().optional(),
-      coverImage: image().optional(),
-      tags: z.array(z.string()).default([]),
-    }),
-});
-
-export const collections = { blog, galleries };
+export const collections = { blog };

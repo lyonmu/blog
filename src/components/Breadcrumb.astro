@@ -4,6 +4,12 @@ const currentUrlPath = Astro.url.pathname.replace(/\/+$/, "");
 
 // Get url array from path
 // eg: /tags/tailwindcss => ['tags', 'tailwindcss']
+const routeLabels: Record<string, string> = {
+  tags: "标签",
+  about: "关于",
+  archives: "归档",
+  search: "搜索",
+};
 const breadcrumbList = currentUrlPath.split("/").slice(1);
 
 // if breadcrumb is Home > Posts > 1 <etc>
@@ -23,7 +29,7 @@ if (breadcrumbList[0] === "tags" && !isNaN(Number(breadcrumbList[2]))) {
 }
 ---
 
-<nav class="app-layout mt-6 mb-2" aria-label="breadcrumb">
+<nav class="app-layout mt-6 mb-2" aria-label="面包屑导航">
   <div
     class="breadcrumb-bar inline-flex items-center gap-1.5 rounded-full border border-border/20 bg-muted/5 px-3 py-1.5 font-cartograph text-sm backdrop-blur-sm"
   >
@@ -54,14 +60,18 @@ if (breadcrumbList[0] === "tags" && !isNaN(Number(breadcrumbList[2]))) {
               ]}
               aria-current="page"
             >
-              {decodeURIComponent(breadcrumb)}
+              {index === 0
+                ? (routeLabels[breadcrumb] ?? decodeURIComponent(breadcrumb))
+                : decodeURIComponent(breadcrumb)}
             </span>
           ) : (
             <a
               href={`/${breadcrumb}/`}
               class="breadcrumb-link shrink-0 rounded-md px-1.5 py-0.5 text-foreground/50 capitalize transition-colors duration-200 hover:bg-muted/10 hover:text-accent"
             >
-              {decodeURIComponent(breadcrumb)}
+              {index === 0
+                ? (routeLabels[breadcrumb] ?? decodeURIComponent(breadcrumb))
+                : decodeURIComponent(breadcrumb)}
             </a>
           )}
         </>

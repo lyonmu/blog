@@ -19,13 +19,13 @@ const pathSegments = currentUrlPath.split("/").filter(s => s.trim());
             class="back-btn group inline-flex shrink-0 items-center justify-center gap-1 rounded-md px-1.5 py-0.5 text-foreground/50 transition-all duration-200 hover:bg-muted/10 hover:text-accent"
           >
             <IconChevronLeft class="size-3.5 transition-transform duration-200 group-hover:-translate-x-0.5 rtl:rotate-180 rtl:group-hover:translate-x-0.5" />
-            <span>cd ..</span>
+            <span>返回上一页</span>
           </a>
 
           {/* Breadcrumb trail */}
           {pathSegments.length > 0 && (
             <nav
-              aria-label="breadcrumb"
+              aria-label="面包屑导航"
               class="breadcrumb-trail flex min-w-0 items-center gap-1 text-sm"
             >
               {/* Separator after Back button */}

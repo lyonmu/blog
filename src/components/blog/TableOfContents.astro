@@ -1,0 +1,98 @@
+---
+import type { MarkdownHeading } from "astro";
+type Props = { headings: MarkdownHeading[] };
+const headings = Astro.props.headings.filter(
+  h => h.depth === 2 || h.depth === 3
+);
+---
+
+{
+  headings.length > 0 && (
+    <aside class="article-toc" data-pagefind-ignore>
+      <nav class="desktop-toc" aria-label="文章目录">
+        <>
+          <p class="eyebrow mb-4">文章目录</p>
+          <ul>
+            {headings.map(h => (
+              <li class:list={{ nested: h.depth === 3 }}>
+                <a href={`#${h.slug}`} data-toc-link>
+                  {h.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </>
+      </nav>
+      <details class="mobile-toc">
+        <>
+          <summary>文章目录</summary>
+          <nav aria-label="文章目录">
+            <ul>
+              {headings.map(h => (
+                <li class:list={{ nested: h.depth === 3 }}>
+                  <a href={`#${h.slug}`} data-toc-link>
+                    {h.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </>
+      </details>
+    </aside>
+  )
+}
+<style>
+  .article-toc {
+    grid-row: 1;
+  }
+  .desktop-toc {
+    display: none;
+  }
+  .mobile-toc {
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 1rem;
+  }
+  summary {
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  details nav {
+    margin-top: 1rem;
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+  @media (min-width: 1280px) {
+    .article-toc {
+      grid-row: auto;
+    }
+    .desktop-toc {
+      display: block;
+      position: sticky;
+      top: 6rem;
+      max-height: calc(100vh - 8rem);
+      overflow-y: auto;
+    }
+    .mobile-toc {
+      display: none;
+    }
+  }
+  a {
+    display: block;
+    border-left: 1px solid var(--border);
+    padding: 0.45rem 0.75rem;
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+  a[aria-current="location"] {
+    border-color: var(--accent);
+    color: var(--foreground);
+    background: var(--glow);
+  }
+  .nested a {
+    padding-left: 1.5rem;
+  }
+</style>

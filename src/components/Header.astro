@@ -2,9 +2,7 @@
 import IconMoon from "@/assets/icons/IconMoon.svg";
 import IconSearch from "@/assets/icons/IconSearch.svg";
 import IconArchive from "@/assets/icons/IconArchive.svg";
-import IconGallery from "@/assets/icons/IconGallery.svg";
 import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
-import Logo from "@/assets/logo/favicon.svg";
 import LinkButton from "./LinkButton.astro";
 import { SITE } from "@/config";
 
@@ -50,15 +48,16 @@ const isActive = (path: string) => {
         class="group relative z-20 flex items-center gap-2 text-xl font-bold tracking-tight sm:text-2xl"
         aria-label="返回首页"
       >
-        <!-- <span class="nav-logo-text">{SITE.title}</span> -->
-        <Logo
-          class="h-10 w-auto transition-transform duration-300 hover:scale-105 sm:h-12 dark:invert"
-          aria-hidden="true"
-        />
+        <span class="font-cartograph text-base tracking-[0.14em]"
+          >LYONMU<span class="text-accent">.</span></span
+        >
       </a>
 
       <!-- Nav area -->
       <nav id="nav-menu" class="flex items-center sm:gap-1">
+        <a href="/search" class="nav-icon-btn mobile-search" aria-label="搜索"
+          ><IconSearch /></a
+        >
         <!-- Mobile hamburger (animated lines) -->
         <button
           id="menu-btn"
@@ -79,6 +78,7 @@ const isActive = (path: string) => {
           <li>
             <a
               href="/posts"
+              aria-current={isActive("/posts") ? "page" : undefined}
               class:list={["nav-link", { "nav-active": isActive("/posts") }]}
               >文章</a
             >
@@ -86,6 +86,7 @@ const isActive = (path: string) => {
           <li>
             <a
               href="/tags"
+              aria-current={isActive("/tags") ? "page" : undefined}
               class:list={["nav-link", { "nav-active": isActive("/tags") }]}
               >标签</a
             >
@@ -93,6 +94,7 @@ const isActive = (path: string) => {
           <li>
             <a
               href="/about"
+              aria-current={isActive("/about") ? "page" : undefined}
               class:list={["nav-link", { "nav-active": isActive("/about") }]}
               >关于</a
             >
@@ -100,6 +102,7 @@ const isActive = (path: string) => {
           <li class="flex items-center">
             <a
               href="/search"
+              aria-current={isActive("/search") ? "page" : undefined}
               class:list={["nav-link", { "nav-active": isActive("/search") }]}
               title="前往搜索">搜索</a
             >
@@ -109,33 +112,16 @@ const isActive = (path: string) => {
               <li>
                 <LinkButton
                   href="/archives"
+                  aria-current={isActive("/archives") ? "page" : undefined}
                   class:list={[
                     "nav-link",
                     { "nav-active": isActive("/archives") },
                   ]}
                   title="归档"
-                  aria-label="archives"
+                  aria-label="文章归档"
                 >
                   <IconArchive class="hidden sm:inline-block" />
                   <span class="sm:sr-only">归档</span>
-                </LinkButton>
-              </li>
-            )
-          }
-          {
-            SITE.showGalleries && (
-              <li>
-                <LinkButton
-                  href="/galleries"
-                  class:list={[
-                    "nav-link",
-                    { "nav-active": isActive("/galleries") },
-                  ]}
-                  title="画廊"
-                  aria-label="galleries"
-                >
-                  <IconGallery class="hidden sm:inline-block" />
-                  <span class="sm:sr-only">画廊</span>
                 </LinkButton>
               </li>
             )
@@ -165,7 +151,7 @@ const isActive = (path: string) => {
                   id="theme-btn"
                   class="nav-icon-btn relative"
                   title="切换亮色/暗色主题"
-                  aria-label="auto"
+                  aria-label="切换主题"
                   aria-live="polite"
                 >
                   <IconMoon class="absolute top-1/2 left-1/2 -translate-1/2 scale-100 rotate-0 transition-all duration-300 dark:scale-0 dark:-rotate-90" />
@@ -193,6 +179,7 @@ const isActive = (path: string) => {
           <nav class="mobile-nav-links">
             <a
               href="/posts"
+              aria-current={isActive("/posts") ? "page" : undefined}
               class:list={["mobile-nav-link", { active: isActive("/posts") }]}
               style="--i:0"
             >
@@ -201,6 +188,7 @@ const isActive = (path: string) => {
             </a>
             <a
               href="/tags"
+              aria-current={isActive("/tags") ? "page" : undefined}
               class:list={["mobile-nav-link", { active: isActive("/tags") }]}
               style="--i:1"
             >
@@ -209,6 +197,7 @@ const isActive = (path: string) => {
             </a>
             <a
               href="/about"
+              aria-current={isActive("/about") ? "page" : undefined}
               class:list={["mobile-nav-link", { active: isActive("/about") }]}
               style="--i:2"
             >
@@ -219,6 +208,7 @@ const isActive = (path: string) => {
               SITE.showArchives && (
                 <a
                   href="/archives"
+                  aria-current={isActive("/archives") ? "page" : undefined}
                   class:list={[
                     "mobile-nav-link",
                     { active: isActive("/archives") },
@@ -227,21 +217,6 @@ const isActive = (path: string) => {
                 >
                   <span class="mobile-nav-indicator" />
                   <span>归档</span>
-                </a>
-              )
-            }
-            {
-              SITE.showGalleries && (
-                <a
-                  href="/galleries"
-                  class:list={[
-                    "mobile-nav-link",
-                    { active: isActive("/galleries") },
-                  ]}
-                  style="--i:4"
-                >
-                  <span class="mobile-nav-indicator" />
-                  <span>画廊</span>
                 </a>
               )
             }
@@ -267,7 +242,7 @@ const isActive = (path: string) => {
                   id="theme-btn-mobile"
                   class="mobile-action-btn flex-1 justify-center"
                   title="切换主题"
-                  aria-label="auto"
+                  aria-label="切换主题"
                   aria-live="polite"
                 >
                   <IconMoon class="block size-4 dark:hidden" />
@@ -292,9 +267,17 @@ const isActive = (path: string) => {
 </header>
 
 <style>
+  @media (min-width: 640px) {
+    .nav-icon-btn.mobile-search {
+      display: none;
+    }
+  }
+
   /* ─── Header Glass & Scroll Physics ─── */
   #main-header {
-    background: transparent;
+    background: color-mix(in srgb, var(--background) 88%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
   }
 
   :global(.header-scrolled) {
@@ -306,66 +289,6 @@ const isActive = (path: string) => {
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
-  }
-
-  .nav-logo-text {
-    background: linear-gradient(
-      135deg,
-      var(--foreground) 0%,
-      var(--foreground) 60%,
-      var(--accent) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  /* ─── Logo SVG hover effects ─── */
-  :global(.logo-text-left),
-  :global(.logo-text-right) {
-    transition:
-      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-      filter 0.4s ease;
-  }
-  :global(.logo-sphere) {
-    transition:
-      transform 0.3s ease,
-      filter 0.3s ease;
-    transform-origin: 342px 130px;
-  }
-
-  .group:hover :global(.logo-text-left) {
-    transform: translateX(-5px);
-    filter: drop-shadow(0 0 3px rgba(56, 66, 77, 0.2));
-  }
-  .group:hover :global(.logo-text-right) {
-    transform: translateX(5px);
-    filter: drop-shadow(0 0 3px rgba(56, 66, 77, 0.2));
-  }
-  .group:hover :global(.logo-sphere) {
-    filter: drop-shadow(0 0 8px rgba(167, 90, 90, 0.5));
-    animation: sphere-wiggle 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  }
-
-  @keyframes sphere-wiggle {
-    0% {
-      transform: rotate(0deg) scale(1);
-    }
-    20% {
-      transform: rotate(-8deg) scale(1.1);
-    }
-    40% {
-      transform: rotate(5deg) scale(1.15);
-    }
-    60% {
-      transform: rotate(-3deg) scale(1.12);
-    }
-    80% {
-      transform: rotate(1deg) scale(1.08);
-    }
-    100% {
-      transform: rotate(0deg) scale(1.06);
-    }
   }
 
   /* ─── Desktop nav links ─── */
@@ -733,13 +656,13 @@ const isActive = (path: string) => {
     if (!header || !navWrap || !borderLine) return;
 
     const handleScroll = () => {
-      if (window.scrollY > 15) {
+      if (window.scrollY > 64) {
         header.classList.add("header-scrolled");
         navWrap.classList.remove("sm:py-5");
         navWrap.classList.add("sm:py-3");
         borderLine.classList.remove("opacity-0");
         borderLine.classList.add("opacity-100");
-      } else {
+      } else if (window.scrollY < 8) {
         header.classList.remove("header-scrolled");
         navWrap.classList.add("sm:py-5");
         navWrap.classList.remove("sm:py-3");
@@ -788,6 +711,20 @@ const isActive = (path: string) => {
       { signal }
     );
 
+    document.addEventListener(
+      "keydown",
+      event => {
+        if (
+          event.key === "Escape" &&
+          menuBtn.getAttribute("aria-expanded") === "true"
+        ) {
+          closeMenu();
+          (menuBtn as HTMLElement).focus();
+        }
+      },
+      { signal }
+    );
+
     // Close when clicking the backdrop
     if (backdrop) {
       backdrop.addEventListener("click", closeMenu, { signal });
@@ -798,6 +735,11 @@ const isActive = (path: string) => {
       link.addEventListener("click", closeMenu, { signal });
     });
   }
+
+  document.addEventListener("astro:before-swap", () => {
+    headerCleanup?.abort();
+    scrollCleanup?.abort();
+  });
 
   // Initial load
   setupScrollPhysics();

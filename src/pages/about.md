@@ -3,7 +3,7 @@ layout: ../layouts/AboutLayout.astro
 title: "About"
 ---
 
-# 关于我
+## 关于我
 
 ![logo](../assets/logo/logo-raw.png)
 

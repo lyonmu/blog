@@ -8,7 +8,7 @@ import EditPost from "@/components/EditPost.astro";
 import ShareLinks from "@/components/ShareLinks.astro";
 import BackButton from "@/components/BackButton.astro";
 import BackToTopButton from "@/components/BackToTopButton.astro";
-import GalleryEmbed from "@/components/GalleryEmbed.astro";
+import TableOfContents from "@/components/blog/TableOfContents.astro";
 import { getPath } from "@/utils/getPath";
 import { slugifyStr } from "@/utils/slugify";
 import { SITE } from "@/config";
@@ -33,7 +33,14 @@ const {
   hideEditPost,
 } = post.data;
 
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+const readingMinutes = Math.max(
+  1,
+  Math.ceil(
+    ((post.body ?? "").match(/[\u4e00-\u9fff]|[a-zA-Z0-9]+/g)?.length ?? 0) /
+      300
+  )
+);
 
 let ogImageUrl: string | undefined;
 
@@ -83,6 +90,9 @@ const nextPost =
 <Layout {...layoutProps}>
   <Header />
   <BackButton />
+  <div class="reading-progress" aria-hidden="true">
+    <div data-reading-progress></div>
+  </div>
   <main
     id="main-content"
     class:list={["relative app-layout pb-12", { "mt-8": !SITE.showBackButton }]}
@@ -102,6 +112,11 @@ const nextPost =
           {title}
         </h1>
 
+        <p
+          class="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground"
+        >
+          {description}
+        </p>
         <!-- Tags as badges -->
         <div class="mt-4 flex flex-wrap justify-center gap-2">
           {
@@ -167,6 +182,7 @@ const nextPost =
             />
           </div>
 
+          <span class="eyebrow">约 {readingMinutes} 分钟阅读</span>
           <!-- Edit post -->
           <EditPost
             {hideEditPost}
@@ -177,12 +193,15 @@ const nextPost =
       </div>
     </header>
 
-    <article
-      id="article"
-      class="app-prose mt-8 w-full max-w-app prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)"
-    >
-      <Content components={{ GalleryEmbed }} />
-    </article>
+    <div class="reading-layout">
+      <article
+        id="article"
+        class="app-prose mt-8 w-full max-w-app prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)"
+      >
+        <Content />
+      </article>
+      <TableOfContents {headings} />
+    </div>
 
     <!-- ═══════ Post footer section ═══════ -->
     <div
@@ -204,7 +223,7 @@ const nextPost =
         <span
           class="h-1.5 w-1.5 rounded-full bg-accent/50 shadow-[0_0_8px_var(--color-accent)]"
         ></span>
-        fin
+        全文完
       </div>
 
       <div
@@ -273,7 +292,7 @@ const nextPost =
                 <polyline points="12 19 5 12 12 5" />
               </svg>
               <span class="font-cartograph text-[10px] tracking-wider text-foreground/35 uppercase">
-                Anterior
+                上一篇
               </span>
             </div>
             <span class="line-clamp-2 text-sm leading-snug font-medium text-foreground/70 transition-colors duration-200 group-hover:text-accent">
@@ -293,7 +312,7 @@ const nextPost =
             <div class="post-nav-bg" />
             <div class="flex items-center gap-1.5">
               <span class="font-cartograph text-[10px] tracking-wider text-foreground/35 uppercase">
-                Siguiente
+                下一篇
               </span>
               <svg
                 class="size-3.5 text-accent/50 transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180"
@@ -320,245 +339,50 @@ const nextPost =
   <Footer />
 </Layout>
 
-<script is:inline data-astro-rerun>
-  window.postDetailsCleanup?.abort();
-  window.postDetailsCleanup = new AbortController();
-  const { signal } = window.postDetailsCleanup;
-
-  function createProgressBar() {
-    document.querySelector(".progress-container")?.remove();
-
-    const progressContainer = document.createElement("div");
-    progressContainer.className =
-      "progress-container fixed top-0 z-50 h-1 w-full bg-background";
-
-    const progressBar = document.createElement("div");
-    progressBar.className = "progress-bar h-1 w-0 bg-accent";
-    progressBar.id = "myBar";
-
-    progressContainer.appendChild(progressBar);
-    document.body.appendChild(progressContainer);
-  }
-
-  function updateScrollProgress() {
-    const update = () => {
-      const winScroll =
-        document.body.scrollTop || document.documentElement.scrollTop;
-      const height =
-        document.documentElement.scrollHeight -
-        document.documentElement.clientHeight;
-      const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
-      const myBar = document.getElementById("myBar");
-      if (myBar) {
-        myBar.style.width = `${scrolled}%`;
-      }
-    };
-
-    document.addEventListener("scroll", update, { signal, passive: true });
-    update();
-  }
-
-  function addHeadingLinks() {
-    const headings = Array.from(
-      document.querySelectorAll(
-        "#article h2, #article h3, #article h4, #article h5, #article h6"
-      )
-    );
-    for (const heading of headings) {
-      if (!heading.id || heading.querySelector(".heading-link")) continue;
-
-      heading.classList.add("group");
-      const link = document.createElement("a");
-      link.className =
-        "heading-link ms-2 no-underline opacity-75 md:opacity-0 md:group-hover:opacity-100 md:focus:opacity-100";
-      link.href = "#" + heading.id;
-
-      const span = document.createElement("span");
-      span.ariaHidden = "true";
-      span.innerText = "#";
-      link.appendChild(span);
-      link.ariaLabel = "link to heading";
-      heading.appendChild(link);
-    }
-  }
-
-  function attachCopyButtons() {
-    const copyButtonLabel = "Copy";
-    const codeBlocks = Array.from(
-      document.querySelectorAll("#article pre:not(.mermaid)")
-    );
-
-    for (const codeBlock of codeBlocks) {
-      if (codeBlock.querySelector(".copy-code")) continue;
-
-      const wrapper = document.createElement("div");
-      wrapper.style.position = "relative";
-
-      // Check if --file-name-offset custom property exists
-      const computedStyle = getComputedStyle(codeBlock);
-      const hasFileNameOffset =
-        computedStyle.getPropertyValue("--file-name-offset").trim() !== "";
-
-      // Determine the top positioning class
-      const topClass = hasFileNameOffset
-        ? "top-(--file-name-offset)"
-        : "-top-3";
-
-      const copyButton = document.createElement("button");
-      copyButton.className = `copy-code absolute end-3 ${topClass} rounded bg-muted border border-muted px-2 py-1 text-xs leading-4 text-foreground font-medium`;
-      copyButton.innerHTML = copyButtonLabel;
-      codeBlock.setAttribute("tabindex", "0");
-      codeBlock.appendChild(copyButton);
-
-      if (!codeBlock.parentElement?.hasAttribute("data-code-wrapper")) {
-        codeBlock.parentNode?.insertBefore(wrapper, codeBlock);
-        wrapper.setAttribute("data-code-wrapper", "");
-        wrapper.appendChild(codeBlock);
-      }
-
-      copyButton.addEventListener(
-        "click",
-        async () => {
-          await copyCode(codeBlock, copyButton);
-        },
-        { signal }
-      );
-    }
-
-    async function copyCode(block, button) {
-      const code = block.querySelector("code");
-      const text = code?.innerText;
-
-      await navigator.clipboard.writeText(text ?? "");
-
-      // visual feedback that task is completed
-      button.innerText = "Copied";
-
-      setTimeout(() => {
-        button.innerText = copyButtonLabel;
-      }, 700);
-    }
-  }
-
-  createProgressBar();
-  updateScrollProgress();
-  addHeadingLinks();
-  attachCopyButtons();
-
-  document.addEventListener(
-    "astro:after-swap",
-    () => window.scrollTo({ left: 0, top: 0, behavior: "instant" }),
-    { signal }
-  );
-</script>
-
+<script src="../scripts/article.ts"></script>
 <style>
-  .post-title {
-    background: linear-gradient(
-      135deg,
-      var(--accent) 0%,
-      color-mix(in oklab, var(--accent) 60%, var(--foreground)) 25%,
-      var(--foreground) 50%,
-      var(--foreground) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .post-tag-badge {
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-  }
-
-  /* Hero Aurora glow layer */
-  .post-hero-bg {
-    position: absolute;
-    inset: -2px;
-    opacity: 0.5;
-    background:
-      radial-gradient(
-        circle at 20% 0%,
-        color-mix(in oklab, var(--accent) 15%, transparent) 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        ellipse 80% 60% at 80% 100%,
-        color-mix(in oklab, var(--accent) 10%, transparent) 0%,
-        transparent 60%
-      );
-    filter: blur(24px);
+  .reading-progress {
+    position: fixed;
+    inset: 0 0 auto;
+    height: 2px;
+    z-index: 60;
     pointer-events: none;
-    z-index: 0;
-    border-radius: 1.5rem; /* matches rounded-3xl */
   }
-
-  .post-nav-link {
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    background: color-mix(in srgb, var(--muted) 5%, transparent);
-    position: relative;
-    transition:
-      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-      box-shadow 0.3s ease,
-      border-color 0.3s ease,
-      background-color 0.3s ease;
+  .reading-progress div {
+    height: 100%;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
   }
-
-  .post-nav-link:hover {
-    background: color-mix(in srgb, var(--accent) 4%, transparent);
-    transform: translateY(-2px);
-  }
-
-  .post-nav-link:active {
-    transform: translateY(0) scale(0.98);
-  }
-
-  :global(.app-prose pre.mermaid) {
-    display: flex;
+  .reading-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 760px);
     justify-content: center;
-    overflow-x: auto;
-    border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+    gap: 2rem;
+  }
+  #article {
+    max-width: 760px;
+    min-width: 0;
+    margin: 0;
+  }
+  .post-title {
+    overflow-wrap: anywhere;
+  }
+  @media (min-width: 1280px) {
+    .reading-layout {
+      grid-template-columns: minmax(0, 760px) minmax(160px, 1fr);
+    }
+  }
+  :global(.app-prose pre.mermaid) {
+    overflow: auto;
+    border: 1px solid var(--border);
     border-radius: 0.75rem;
-    background: color-mix(in oklab, var(--muted) 18%, transparent);
+    background: var(--surface);
     padding: 1rem;
   }
-
   :global(.app-prose pre.mermaid svg) {
     max-width: 100%;
     height: auto;
-  }
-
-  /* Aurora glow layer — always visible, intensifies on hover */
-  .post-nav-bg {
-    position: absolute;
-    inset: -1px;
-    opacity: 0.5;
-    transition: opacity 0.4s ease;
-    background:
-      radial-gradient(
-        ellipse 80% 60% at 20% 80%,
-        color-mix(in oklab, var(--accent) 12%, transparent) 0%,
-        transparent 70%
-      ),
-      radial-gradient(
-        ellipse 60% 70% at 80% 20%,
-        color-mix(in oklab, var(--accent) 8%, transparent) 0%,
-        transparent 60%
-      ),
-      radial-gradient(
-        ellipse 90% 40% at 50% 100%,
-        color-mix(in oklab, var(--accent) 6%, transparent) 0%,
-        transparent 50%
-      );
-    filter: blur(16px);
-    pointer-events: none;
-    z-index: -1;
-    border-radius: inherit;
-  }
-
-  .post-nav-link:hover .post-nav-bg {
-    opacity: 1;
-    filter: blur(20px);
+    margin: auto;
   }
 </style>

@@ -3,483 +3,410 @@ import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
-import Breadcrumb from "@/components/Breadcrumb.astro";
-import IconHash from "@/assets/icons/IconHash.svg";
 import getUniqueTags from "@/utils/getUniqueTags";
 import getPostsByTag from "@/utils/getPostsByTag";
 import { SITE } from "@/config";
-
 const posts = await getCollection("blog");
-
-const tags = getUniqueTags(posts);
-const tagsWithCount = tags.map(({ tag, tagName }) => ({
+const tags = getUniqueTags(posts).map(({ tag, tagName }) => ({
   tag,
   tagName,
   count: getPostsByTag(posts, tag).length,
 }));
-
-const maxCount = Math.max(...tagsWithCount.map(t => t.count));
 ---
 
 <Layout title={`标签 | ${SITE.title}`}>
   <Header />
-  <Breadcrumb />
-  <main id="main-content" class="app-layout pb-12">
-    <!-- Hero with mouse-tracking aurora -->
-    <div class="tags-hero" data-aurora-hero>
-      <div class="aurora-orb aurora-orb-1"></div>
-      <div class="aurora-orb aurora-orb-2"></div>
-      <div class="aurora-orb aurora-orb-3"></div>
-      <div class="aurora-mouse-follow" data-aurora-mouse></div>
-      <div class="relative z-10">
-        <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
-          <span class="glow-text">标签</span>
-        </h1>
-        <p class="mt-3 max-w-lg text-foreground/70 italic">
-          探索博客的所有主题，每个标签都是一个内容世界。
-        </p>
-        <div class="mt-4 flex items-center gap-2 text-sm text-foreground/50">
-          <span class="hero-badge">
-            {tagsWithCount.length} 个标签
-          </span>
-          <span class="hero-badge">
-            {posts.length} 篇文章
-          </span>
-        </div>
+  <main id="main-content" class="app-layout pb-16">
+    <header class="atlas-heading">
+      <p class="eyebrow">知识宇宙</p><h1>每一份好奇，都有自己的星系。</h1><p>
+        云原生、系统与工程实践，沿着兴趣探索新的坐标。
+      </p>
+    </header>
+    <section class="universe" data-universe aria-label="标签宇宙">
+      <div class="universe-toolbar">
+        <span
+          >✦ &nbsp; 主题星系 <small
+            >/ {String(tags.length).padStart(2, "0")} 个主题</small
+          ></span
+        ><button data-fullscreen aria-pressed="false" hidden
+          ><span aria-hidden="true">⛶</span>
+          <span data-fullscreen-label>全屏查看</span></button
+        >
       </div>
-    </div>
-
-    <div class="tags-grid">
-      {
-        tagsWithCount.map(({ tag, tagName, count }) => {
-          const intensity = count / maxCount;
-          return (
-            <a
-              href={`/tags/${tag}/`}
-              transition:name={tag}
-              class="tag-card group"
-              data-tag-card
+      <div class="universe-layout">
+        <div class="cosmos" data-cosmos>
+          <div class="canvas-host" data-canvas-host aria-hidden="true"></div>
+          <div class="planet-labels" data-planet-labels></div>
+          <p class="scene-status" data-scene-status role="status">
+            正在点亮星系…
+          </p>
+          <div class="coordinates" aria-hidden="true">
+            知识观测站<br />23° 26′ · 好奇不止
+          </div>
+          <div class="scene-controls">
+            <button data-universe-pause hidden>暂停公转</button><button
+              data-universe-reset
+              hidden>重置视角</button
             >
-              <div class="tag-aurora" data-tag-aurora />
-              <div class="tag-border-glow" data-tag-border />
-              <div class="tag-content">
-                <div class="flex items-center gap-1.5">
-                  <IconHash class="size-5 text-accent opacity-60 transition-opacity group-hover:opacity-100" />
-                  <span class="tag-name">{tagName}</span>
-                </div>
-                <div class="tag-count">
-                  <span class="tag-count-number">{count}</span>
-                  <span class="tag-count-label">
-                    {count === 1 ? "篇" : "篇"}
-                  </span>
-                </div>
-              </div>
-              <div class="tag-bar">
-                <div
-                  class="tag-bar-fill"
-                  style={`width: ${Math.max(intensity * 100, 8)}%`}
-                />
-              </div>
-            </a>
-          );
-        })
-      }
-    </div>
-  </main>
-  <Footer />
+          </div>
+        </div>
+        <aside class="universe-info">
+          <p class="eyebrow">让每个想法，自成星系</p><h2>
+            以知识为星，<br />以好奇为引。
+          </h2><p>
+            每个标签是一颗主星球。<br />每收录一篇文章，就多一颗卫星。
+          </p><div class="tag-selection" aria-live="polite" aria-atomic="true">
+            <span class="eyebrow">正在探索</span><strong data-tag-name
+              >随兴趣出发</strong
+            ><span data-tag-count>{tags.length} 个主题，等待发现</span>
+          </div><p class="interaction-guide">
+            拖动旋转 · 滚轮或双指缩放<br />点击星球名称，进入主题
+          </p>
+        </aside>
+      </div>
+      <div class="universe-bottom">
+        <span><i></i> 一个主题，一方天地</span><span>收录越多，星系越繁盛</span>
+      </div>
+    </section>
+    <details class="tag-directory" open data-tag-directory>
+      <summary>浏览全部标签 <span>{tags.length} 个主题</span></summary><div
+        data-tag-field
+      >
+        <ul class="tag-matrix">
+          {
+            tags.map(({ tag, tagName, count }) => (
+              <li>
+                <a
+                  href={`/tags/${tag}/`}
+                  data-tag-node
+                  data-name={tagName}
+                  data-count={count}
+                >
+                  <span class="tag-dot" aria-hidden="true" />
+                  {tagName}
+                  <small>{count}</small>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </details>
+  </main><Footer />
 </Layout>
-
-<script>
-  let tagsCleanup: AbortController | null = null;
-
-  document.addEventListener("astro:page-load", () => {
-    // Cleanup previous listeners
-    if (tagsCleanup) tagsCleanup.abort();
-    tagsCleanup = new AbortController();
-    const { signal } = tagsCleanup;
-
-    // Hero mouse-follow aurora
-    const hero = document.querySelector("[data-aurora-hero]") as HTMLElement;
-    const heroMouse = document.querySelector(
-      "[data-aurora-mouse]"
-    ) as HTMLElement;
-    if (hero && heroMouse) {
-      hero.addEventListener(
-        "mousemove",
-        e => {
-          requestAnimationFrame(() => {
-            const rect = hero.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            heroMouse.style.setProperty("--mx", `${x}px`);
-            heroMouse.style.setProperty("--my", `${y}px`);
-            heroMouse.style.opacity = "1";
-          });
-        },
-        { signal }
-      );
-      hero.addEventListener(
-        "mouseleave",
-        () => {
-          heroMouse.style.opacity = "0";
-        },
-        { signal }
-      );
-    }
-
-    // Tag cards mouse-follow aurora
-    const tagCards = document.querySelectorAll("[data-tag-card]");
-    tagCards.forEach(card => {
-      const aurora = card.querySelector("[data-tag-aurora]") as HTMLElement;
-      const border = card.querySelector("[data-tag-border]") as HTMLElement;
-      if (!aurora || !border) return;
-
-      card.addEventListener(
-        "mousemove",
-        e => {
-          requestAnimationFrame(() => {
-            const rect = (card as HTMLElement).getBoundingClientRect();
-            const x = (e as MouseEvent).clientX - rect.left;
-            const y = (e as MouseEvent).clientY - rect.top;
-            aurora.style.setProperty("--mx", `${x}px`);
-            aurora.style.setProperty("--my", `${y}px`);
-            aurora.style.opacity = "1";
-            border.style.setProperty("--mx", `${x}px`);
-            border.style.setProperty("--my", `${y}px`);
-            border.style.opacity = "1";
-          });
-        },
-        { signal }
-      );
-
-      card.addEventListener(
-        "mouseleave",
-        () => {
-          aurora.style.opacity = "0";
-          border.style.opacity = "0";
-        },
-        { signal }
-      );
-    });
-  });
-</script>
-
 <style>
-  /* ===== Hero ===== */
-  .tags-hero {
-    position: relative;
+  :global(html.tag-universe-expanded) {
     overflow: hidden;
-    border-radius: 1.5rem;
-    padding: 2.5rem 2rem;
-    margin-bottom: 2.5rem;
-    background: color-mix(
-      in srgb,
-      var(--color-foreground) 3%,
-      var(--color-background)
-    );
-    border: 1px solid color-mix(in srgb, var(--color-accent) 12%, transparent);
   }
-
-  @media (min-width: 640px) {
-    .tags-hero {
-      padding: 3rem 3rem;
-    }
+  .atlas-heading {
+    padding: 3.5rem 0 2rem;
   }
-
-  /* Floating aurora orbs */
-  .aurora-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(60px);
-    pointer-events: none;
-    will-change: transform;
+  .atlas-heading h1 {
+    font-size: clamp(1.7rem, 3vw, 2.6rem);
+    font-weight: 500;
+    letter-spacing: -0.05em;
+    margin: 1rem 0;
   }
-
-  .aurora-orb-1 {
-    width: 300px;
-    height: 300px;
-    top: -30%;
-    left: -10%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-accent) 25%, transparent),
-      transparent 70%
-    );
-    animation: orb-drift-1 7s ease-in-out infinite alternate;
-  }
-
-  .aurora-orb-2 {
-    width: 250px;
-    height: 250px;
-    top: 10%;
-    right: -5%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-border) 20%, transparent),
-      transparent 70%
-    );
-    animation: orb-drift-2 9s ease-in-out infinite alternate;
-  }
-
-  .aurora-orb-3 {
-    width: 200px;
-    height: 200px;
-    bottom: -20%;
-    left: 40%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-accent) 12%, transparent),
-      transparent 70%
-    );
-    animation: orb-drift-3 11s ease-in-out infinite alternate;
-  }
-
-  @keyframes orb-drift-1 {
-    0% {
-      transform: translate(0, 0) scale(1);
-    }
-    100% {
-      transform: translate(40px, 20px) scale(1.2);
-    }
-  }
-  @keyframes orb-drift-2 {
-    0% {
-      transform: translate(0, 0) scale(1);
-    }
-    100% {
-      transform: translate(-30px, 30px) scale(1.15);
-    }
-  }
-  @keyframes orb-drift-3 {
-    0% {
-      transform: translate(0, 0) scale(1);
-    }
-    100% {
-      transform: translate(20px, -25px) scale(1.1);
-    }
-  }
-
-  /* Mouse aurora follower inside hero */
-  .aurora-mouse-follow {
-    position: absolute;
-    width: 350px;
-    height: 350px;
-    border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-accent) 18%, transparent),
-      color-mix(in srgb, var(--color-border) 8%, transparent) 40%,
-      transparent 70%
-    );
-    filter: blur(50px);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    transform: translate(
-      calc(var(--mx, 0px) - 175px),
-      calc(var(--my, 0px) - 175px)
-    );
-    will-change: transform;
-    z-index: 1;
-  }
-
-  .glow-text {
-    background: linear-gradient(
-      135deg,
-      var(--color-foreground),
-      var(--color-accent)
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(
-      0 0 25px color-mix(in srgb, var(--color-accent) 25%, transparent)
-    );
-  }
-
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.3rem 0.85rem;
-    border-radius: 999px;
+  .atlas-heading > p:last-child {
+    color: var(--muted-foreground);
     font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--color-accent);
-    background: color-mix(in srgb, var(--color-accent) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-accent) 15%, transparent);
-    backdrop-filter: blur(8px);
   }
-
-  /* ===== Tags Grid ===== */
-  .tags-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-    gap: 1rem;
-  }
-
-  /* ===== Tag Card ===== */
-  .tag-card {
+  .universe {
+    --universe-bg: #f0f5fa;
+    --universe-text: #24384b;
+    --universe-muted: #526b80;
+    --universe-border: #b8ccdc80;
+    --universe-button: #ffffffb3;
+    --universe-hover: #dceaf3;
+    --universe-label: #f6faffde;
+    --universe-accent: #236b80;
+    --universe-glow: #aacdde40;
+    --universe-label-shadow: transparent;
     position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 1.25rem;
-    border-radius: 1rem;
-    background: color-mix(
-      in srgb,
-      var(--color-foreground) 2%,
-      var(--color-background)
-    );
-    border: 1px solid
-      color-mix(in srgb, var(--color-foreground) 6%, transparent);
+    border: 1px solid var(--universe-border);
+    border-radius: 1.5rem;
     overflow: hidden;
-    transition:
-      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-      border-color 0.3s ease,
-      box-shadow 0.3s ease;
-    text-decoration: none;
-    color: var(--color-foreground);
-    isolation: isolate;
+    background: var(--universe-bg);
+    color: var(--universe-text);
+    box-shadow: 0 24px 80px #020b1820;
   }
-
-  .tag-card:hover {
-    transform: translateY(-3px);
-    border-color: color-mix(in srgb, var(--color-accent) 30%, transparent);
-    box-shadow:
-      0 10px 40px -10px color-mix(in srgb, var(--color-accent) 15%, transparent),
-      0 0 0 1px color-mix(in srgb, var(--color-accent) 8%, transparent),
-      inset 0 1px 0 color-mix(in srgb, var(--color-accent) 6%, transparent);
+  :global(html[data-theme="dark"]) .universe {
+    --universe-bg: #060d1a;
+    --universe-text: #dbe8f4;
+    --universe-muted: #8fa4ba;
+    --universe-border: #698aa330;
+    --universe-button: #0e1c2c;
+    --universe-hover: #21354b;
+    --universe-label: #06101bc4;
+    --universe-accent: #87d0df;
+    --universe-glow: #14324b55;
+    --universe-label-shadow: #000;
   }
-
-  /* Mouse-follow aurora inside card */
-  .tag-aurora {
-    position: absolute;
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-accent) 22%, transparent),
-      color-mix(in srgb, var(--color-border) 10%, transparent) 40%,
-      transparent 70%
-    );
-    filter: blur(35px);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    transform: translate(
-      calc(var(--mx, 0px) - 100px),
-      calc(var(--my, 0px) - 100px)
-    );
-    will-change: transform;
-    z-index: -1;
-  }
-
-  /* Mouse-follow border glow */
-  .tag-border-glow {
-    position: absolute;
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-accent) 40%, transparent),
-      transparent 70%
-    );
-    filter: blur(20px);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    transform: translate(
-      calc(var(--mx, 0px) - 60px),
-      calc(var(--my, 0px) - 60px)
-    );
-    will-change: transform;
-    z-index: -1;
-    mix-blend-mode: screen;
-  }
-
-  .tag-content {
-    position: relative;
-    z-index: 1;
+  .universe-toolbar,
+  .universe-bottom {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 1rem;
+    padding: 1.2rem 1.6rem;
+    font: 0.65rem var(--font-cartograph);
+    letter-spacing: 0.1em;
   }
-
-  .tag-name {
-    font-weight: 600;
-    font-size: 1rem;
-    transition:
-      color 0.2s ease,
-      text-shadow 0.3s ease;
+  .universe-toolbar {
+    border-bottom: 1px solid var(--universe-border);
+    min-height: 74px;
   }
-
-  .tag-card:hover .tag-name {
-    color: var(--color-accent);
-    text-shadow: 0 0 20px
-      color-mix(in srgb, var(--color-accent) 30%, transparent);
+  .universe-toolbar small {
+    color: var(--universe-muted);
+    margin-left: 0.6rem;
   }
-
-  .tag-count {
+  .universe button {
+    border: 1px solid var(--universe-border);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    color: var(--universe-text);
+    background: var(--universe-button);
+    font-size: 0.7rem;
+    letter-spacing: 0;
+    cursor: pointer;
+  }
+  .universe button:hover {
+    background: var(--universe-hover);
+  }
+  .universe :focus-visible {
+    outline: 2px solid var(--universe-accent);
+    outline-offset: 4px;
+  }
+  .universe-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+  }
+  .cosmos {
+    position: relative;
+    height: 600px;
+    min-width: 0;
+    overflow: hidden;
+    background: radial-gradient(
+      ellipse at 45% 45%,
+      var(--universe-glow),
+      transparent 65%
+    );
+  }
+  .canvas-host,
+  .planet-labels {
+    position: absolute;
+    inset: 0;
+  }
+  .canvas-host :global(canvas) {
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+  .planet-labels {
+    pointer-events: none;
+  }
+  .planet-labels :global(a) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: auto;
+    color: var(--universe-text);
+    font-size: 0.65rem;
+    padding: 5px 9px;
+    border-radius: 8px;
+    text-shadow: 0 2px 5px var(--universe-label-shadow);
+    background: var(--universe-label);
+    border: 1px solid var(--universe-border);
+    white-space: nowrap;
+  }
+  .planet-labels :global(a:hover),
+  .planet-labels :global(a:focus-visible) {
+    color: var(--universe-accent);
+    background: var(--universe-hover);
+    z-index: 5 !important;
+  }
+  .coordinates {
+    position: absolute;
+    bottom: 1.4rem;
+    left: 1.5rem;
+    font: 0.5rem/1.8 var(--font-cartograph);
+    letter-spacing: 0.09em;
+    color: var(--universe-muted);
+    pointer-events: none;
+  }
+  .scene-controls {
+    position: absolute;
+    bottom: 1.2rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+  .scene-status {
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    text-align: center;
+    color: var(--universe-muted);
+    font-size: 0.85rem;
+  }
+  .universe-info {
+    padding: 4rem 1.7rem 2rem 1rem;
+    align-self: center;
+  }
+  .universe-info .eyebrow {
+    font-size: 0.5rem;
+    color: var(--universe-accent);
+  }
+  .universe-info h2 {
+    font-size: 1.9rem;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: -0.045em;
+    margin: 1rem 0;
+  }
+  .universe-info p:not(.eyebrow) {
+    color: var(--universe-muted);
+    font-size: 0.75rem;
+    line-height: 2;
+  }
+  .tag-selection {
+    border-left: 1px solid var(--universe-accent);
     display: flex;
     flex-direction: column;
+    gap: 0.7rem;
+    padding-left: 1rem;
+    margin: 2.5rem 0;
+    min-height: 105px;
+  }
+  .tag-selection strong {
+    font-size: 1.2rem;
+    font-weight: 400;
+    overflow-wrap: anywhere;
+  }
+  .tag-selection > span:last-child {
+    color: var(--universe-muted);
+    font-size: 0.7rem;
+  }
+  .universe-bottom {
+    border-top: 1px solid var(--universe-border);
+    color: var(--universe-muted);
+    font-size: 0.55rem;
+  }
+  .universe-bottom i {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--universe-accent);
+    margin-right: 0.5rem;
+    box-shadow: 0 0 10px var(--universe-accent);
+  }
+  .tag-directory {
+    margin-top: 1.5rem;
+    padding: 1rem 0;
+  }
+  .tag-directory summary {
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  .tag-directory summary span {
+    margin-left: 1rem;
+    color: var(--muted-foreground);
+    font-size: 0.7rem;
+  }
+  .tag-matrix {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.7rem;
+    margin-top: 1rem;
+  }
+  .tag-matrix a {
+    display: flex;
+    gap: 0.5rem;
     align-items: center;
-    gap: 0;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    font-size: 0.75rem;
   }
-
-  .tag-count-number {
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1;
-    color: var(--color-accent);
-    transition: text-shadow 0.3s ease;
+  .tag-matrix a:hover {
+    background: var(--glow);
   }
-
-  .tag-card:hover .tag-count-number {
-    text-shadow: 0 0 15px
-      color-mix(in srgb, var(--color-accent) 50%, transparent);
+  .tag-matrix small {
+    margin-left: auto;
+    color: var(--muted-foreground);
   }
-
-  .tag-count-label {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    opacity: 0.5;
+  .tag-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
   }
-
-  /* Progress bar */
-  .tag-bar {
-    position: relative;
-    z-index: 1;
-    height: 3px;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--color-foreground) 6%, transparent);
-    overflow: hidden;
+  .universe:fullscreen,
+  .universe.expanded {
+    width: 100%;
+    height: 100dvh;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
   }
-
-  .tag-bar-fill {
+  .universe.expanded {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+  }
+  .universe:fullscreen .universe-layout,
+  .universe.expanded .universe-layout {
+    flex: 1;
+    min-height: 0;
+  }
+  .universe:fullscreen .cosmos,
+  .universe.expanded .cosmos {
     height: 100%;
-    border-radius: 999px;
-    background: linear-gradient(
-      90deg,
-      var(--color-accent),
-      var(--color-border)
-    );
-    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 8px color-mix(in srgb, var(--color-accent) 35%, transparent);
   }
-
-  .tag-card:hover .tag-bar-fill {
-    box-shadow:
-      0 0 12px color-mix(in srgb, var(--color-accent) 60%, transparent),
-      0 0 25px color-mix(in srgb, var(--color-accent) 20%, transparent);
-  }
-
-  @media (max-width: 480px) {
-    .tags-grid {
+  @media (max-width: 767px) {
+    .atlas-heading {
+      padding-top: 2rem;
+    }
+    .universe-toolbar {
+      padding: 1rem;
+      font-size: 0.55rem;
+    }
+    .universe-toolbar small {
+      display: none;
+    }
+    .universe-layout {
       grid-template-columns: 1fr;
+    }
+    .cosmos {
+      height: 470px;
+    }
+    .universe-info {
+      padding: 1.5rem;
+      border-top: 1px solid var(--universe-border);
+    }
+    .universe-info h2,
+    .universe-info > .eyebrow,
+    .universe-info > p:not(.interaction-guide) {
+      display: none;
+    }
+    .tag-selection {
+      margin: 0 0 1rem;
+      min-height: 0;
+    }
+    .universe-bottom {
+      padding: 1rem;
+      font-size: 0.45rem;
+    }
+    .coordinates {
+      bottom: 4rem;
+      left: 1rem;
+    }
+    .universe:fullscreen .universe-info,
+    .universe.expanded .universe-info {
+      display: none;
     }
   }
 </style>
+<script src="../../scripts/motion/tags.ts"></script>
+<script src="../../scripts/motion/tagUniverse.ts"></script>

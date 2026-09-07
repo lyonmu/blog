@@ -31,23 +31,18 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
     >
       <!-- Brand column -->
       <div class="flex flex-col items-center gap-3 sm:items-start">
-        <!-- <a
-          href="/"
-          class="group relative flex items-center gap-2 text-lg font-bold tracking-tight"
-        >
-          <Logo
-            class="w-28 opacity-80 transition-all duration-300 group-hover:scale-105 group-hover:opacity-100 group-hover:drop-shadow-[0_0_8px_rgba(var(--accent-rgb),0.5)] dark:invert"
-          />
-        </a> -->
+        <a href="/" class="font-cartograph text-sm tracking-widest">LYONMU.</a>
+        <p class="text-sm text-muted-foreground">云原生知识花园</p>
         <DailyQuote
-          class="max-w-xs text-center font-cartograph text-[11px] leading-relaxed tracking-wide text-foreground/40 sm:text-start"
+          class="max-w-md text-center text-sm leading-relaxed text-muted-foreground sm:text-start"
         />
+        <a href="/rss.xml" class="eyebrow">订阅更新 ↗</a>
       </div>
 
       <!-- Social links -->
       <div class="flex flex-col items-center gap-3 sm:items-end">
         <span
-          class="text-muted-foreground font-cartograph text-[10px] tracking-wider uppercase select-none"
+          class="font-cartograph text-[10px] tracking-wider text-muted-foreground uppercase select-none"
           >联系我</span
         >
         <div class="flex items-center gap-2">
@@ -78,7 +73,9 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
     <div
       class="mt-4 flex flex-col items-center justify-between gap-2 sm:flex-row"
     >
-      <p class="font-cartograph text-[11px] tracking-wide opacity-35">
+      <p
+        class="font-cartograph text-[11px] tracking-wide text-muted-foreground"
+      >
         &copy; {currentYear}
         {SITE.title}&nbsp;
         <a
@@ -90,21 +87,16 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
           豫ICP备2021021610号-1
         </a>
       </p>
-      <p class="font-cartograph text-[11px] tracking-wide opacity-30">
-        <span class="text-accent">&#9829;</span>&nbsp;Powered by&nbsp;<a
+      <p
+        class="font-cartograph text-[11px] tracking-wide text-muted-foreground"
+      >
+        <span class="text-accent">&#9829;</span>&nbsp;技术支持：&nbsp;<a
           href="https://astro.build/"
           target="_blank"
           rel="noopener noreferrer"
           class="transition-colors hover:text-accent hover:opacity-80"
         >
           Astro
-        </a>&nbsp;|&nbsp;Designed by&nbsp;<a
-          href="https://github.com/0xdres/astro-devosfera"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="transition-colors hover:text-accent hover:opacity-80"
-        >
-          Devosfera
         </a>
       </p>
     </div>

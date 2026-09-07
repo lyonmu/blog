@@ -1,0 +1,179 @@
+<div class="hero-scene" data-hero-scene aria-hidden="true">
+  <div class="scene-halo"></div>
+  <svg class="topology-fallback" viewBox="0 0 440 400" fill="none">
+    <defs
+      ><linearGradient
+        id="sculpture-band"
+        x1="110"
+        y1="90"
+        x2="300"
+        y2="310"
+        gradientUnits="userSpaceOnUse"
+        ><stop stop-color="var(--accent)"></stop><stop
+          offset=".5"
+          stop-color="var(--surface)"></stop><stop
+          offset="1"
+          stop-color="var(--accent)"></stop></linearGradient
+      ><radialGradient id="sculpture-core" cx=".3" cy=".2" r=".8"
+        ><stop stop-color="var(--surface)"></stop><stop
+          offset="1"
+          stop-color="var(--accent)"></stop></radialGradient
+      ></defs
+    >
+    <ellipse
+      cx="220"
+      cy="195"
+      rx="165"
+      ry="100"
+      transform="rotate(-25 220 195)"
+      stroke="currentColor"
+      stroke-opacity=".2"></ellipse>
+    <ellipse
+      cx="220"
+      cy="195"
+      rx="128"
+      ry="77"
+      transform="rotate(55 220 195)"
+      stroke="url(#sculpture-band)"
+      stroke-width="12"
+      stroke-linecap="round"
+      stroke-dasharray="510 180"></ellipse>
+    <path d="m220 154 35 20v41l-35 21-35-21v-41Z" fill="url(#sculpture-core)"
+    ></path><path
+      d="m185 174 35 21 35-21m-35 21v41"
+      stroke="currentColor"
+      stroke-opacity=".3"></path>
+    <ellipse
+      cx="220"
+      cy="195"
+      rx="96"
+      ry="112"
+      transform="rotate(-35 220 195)"
+      stroke="url(#sculpture-band)"
+      stroke-width="18"
+      stroke-linecap="round"
+      stroke-dasharray="490 170"></ellipse>
+    <circle cx="365" cy="127" r="5" fill="currentColor"></circle>
+  </svg>
+  <div class="scene-canvas"></div>
+  <span class="scene-kicker">图 01 &nbsp; / &nbsp; 系统的平衡</span>
+  <span class="scene-label label-observe">01 — 感知</span>
+  <span class="scene-label label-reason">02 — 推理</span>
+  <span class="scene-label label-evolve">03 — 演进</span>
+  <div class="scene-caption">
+    <span class="caption-line"></span><span
+      >秩序之中，持续演化。<small>云原生 · 可观测性 · 人工智能</small></span
+    >
+  </div>
+</div>
+<style>
+  .hero-scene {
+    position: relative;
+    aspect-ratio: 1;
+    width: 100%;
+    color: var(--accent);
+    isolation: isolate;
+    overflow: clip;
+  }
+  .scene-halo {
+    position: absolute;
+    inset: 12% 7% 15%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, var(--glow), transparent 70%);
+  }
+  .hero-scene::after {
+    content: "";
+    position: absolute;
+    left: 25%;
+    right: 25%;
+    bottom: 17%;
+    height: 5%;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.1;
+    filter: blur(16px);
+    pointer-events: none;
+  }
+  .topology-fallback,
+  .scene-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .scene-canvas {
+    opacity: 0;
+    transition: opacity 500ms;
+  }
+  .hero-scene:global(.scene-ready) .scene-canvas {
+    opacity: 1;
+  }
+  .hero-scene:global(.scene-ready) .topology-fallback {
+    opacity: 0;
+  }
+  .scene-label,
+  .scene-kicker {
+    position: absolute;
+    font: 0.48rem var(--font-cartograph);
+    color: var(--muted-foreground);
+    letter-spacing: 0.09em;
+    pointer-events: none;
+  }
+  .scene-kicker {
+    top: 6%;
+    left: 10%;
+    font-size: 0.45rem;
+  }
+  .scene-label::before {
+    content: "+";
+    color: var(--accent);
+    margin-right: 0.5rem;
+  }
+  .label-observe {
+    top: 24%;
+    right: 2%;
+  }
+  .label-reason {
+    left: 1%;
+    top: 65%;
+  }
+  .label-evolve {
+    right: 4%;
+    top: 77%;
+  }
+  .scene-caption {
+    position: absolute;
+    bottom: 1%;
+    left: 14%;
+    display: flex;
+    gap: 0.75rem;
+    align-items: start;
+    color: var(--muted-foreground);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+  }
+  .caption-line {
+    width: 25px;
+    height: 1px;
+    background: var(--accent);
+    margin-top: 0.5rem;
+  }
+  .scene-caption small {
+    display: block;
+    margin-top: 0.5rem;
+    font: 0.4rem var(--font-cartograph);
+    letter-spacing: 0.06em;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scene-canvas {
+      transition: none;
+    }
+  }
+  @media (max-width: 767px) {
+    .hero-scene {
+      max-width: 400px;
+      margin: 1rem auto;
+    }
+  }
+</style>
+<script src="../../scripts/motion/heroScene.ts"></script>

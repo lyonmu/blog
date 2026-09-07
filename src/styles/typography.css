@@ -261,3 +261,100 @@
     }
   }
 }
+
+/* Reading column and technical content. */
+.app-prose {
+  font-size: 1.0625rem;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+.app-prose h3 {
+  font-family: var(--font-wotfard);
+  font-style: normal;
+}
+.app-prose pre {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding-top: 2.7rem;
+  max-width: 100%;
+}
+.app-prose pre code {
+  font-family: var(--font-cascadia-code);
+  font-size: 0.85rem;
+  line-height: 1.75;
+}
+.app-prose table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+.app-prose img {
+  height: auto;
+  border-radius: 0.75rem;
+}
+.app-prose blockquote {
+  font-family: var(--font-wotfard);
+  font-style: normal;
+  box-shadow: none;
+}
+.heading-link {
+  margin-left: 0.5rem;
+  opacity: 0.35;
+  font-size: 0.8em;
+}
+.heading-link:focus-visible,
+.heading-link:hover {
+  opacity: 1;
+}
+.copy-code {
+  position: absolute;
+  right: 0.6rem;
+  top: 0.5rem;
+  font: 0.7rem var(--font-cartograph);
+  background: var(--surface-secondary);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.3rem;
+}
+.image-zoom-trigger {
+  display: block;
+  width: 100%;
+  cursor: zoom-in;
+}
+.image-zoom {
+  margin: auto;
+  padding: 2.5rem 1rem 1rem;
+  max-width: 95vw;
+  max-height: 95vh;
+  background: var(--surface);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+}
+.image-zoom::backdrop {
+  background: rgb(0 0 0 / 0.8);
+}
+.image-zoom > button {
+  position: absolute;
+  right: 1rem;
+  top: 0.5rem;
+}
+.image-zoom img {
+  max-width: 90vw;
+  max-height: 82vh;
+  object-fit: contain;
+}
+body:has(#article) .site-backdrop {
+  opacity: 0.15;
+}
+
+.app-prose pre[data-language]:not([data-code-file])::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0.6rem;
+  left: 1rem;
+  font: 0.7rem var(--font-cartograph);
+  color: var(--muted-foreground);
+}

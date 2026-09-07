@@ -1,6 +1,6 @@
 # Lyonmu 博客
 
-基于 [Astro](https://github.com/withastro/astro) 的 [Devosfera](https://github.com/0xdres/astro-devosfera) 主题优化的博客。
+基于 [Astro](https://github.com/withastro/astro) 的博客。
 
 **🌐 在线地址:** [blog.muqingcloud.space](https://blog.muqingcloud.space/)
 
